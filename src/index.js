@@ -19,31 +19,41 @@ const randomIntegerFromInterval = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-const backgroundColorChanger = {
-  isColorChangeStarted: false,
-  backgroundColorChangerIntervalId: null,
+let isColorChangeStarted = false;
+let backgroundColorChangerIntervalId = null;
 
-  startColorChange() {
-    if (this.isColorChangeStarted) {
-      return;
-    };
-    this.isColorChangeStarted = true;
-    this.backgroundColorChangerIntervalId = setInterval(
-      () => {
-        elements.bodyElement.style.backgroundColor = colors[randomIntegerFromInterval(0, colors.length - 1)];
-      }, 1000
-    );
-  },
-  stopColorChange() {
-    if (!this.isColorChangeStarted) {
-      return;
-    };
-    this.isColorChangeStarted = false;
-    clearInterval(this.backgroundColorChangerIntervalId);
-  }
-}
+function startColorChange() {
+  if (isColorChangeStarted) {
+    return;
+  };
+  changeState();
+  backgroundColorChangerIntervalId = setInterval(
+    () => {
+      elements.bodyElement.style.backgroundColor = colors[randomIntegerFromInterval(0, colors.length - 1)];
+    }, 1000
+  );
+};
 
-elements.buttonStartElement.addEventListener('click',
-  backgroundColorChanger.startColorChange.bind(backgroundColorChanger));
-elements.buttonStopElement.addEventListener('click',
-  backgroundColorChanger.stopColorChange.bind(backgroundColorChanger));
+function stopColorChange() {
+  if (!isColorChangeStarted) {
+    return;
+  };
+  changeState();
+  clearInterval(backgroundColorChangerIntervalId);
+};
+
+function changeState() {
+  if (isColorChangeStarted) {
+    isColorChangeStarted = false;
+    elements.buttonStartElement.disabled = false;
+    elements.buttonStopElement.disabled = true;
+  } else {
+    isColorChangeStarted = true;
+    elements.buttonStartElement.disabled = true;
+    elements.buttonStopElement.disabled = false;
+  };
+};
+
+elements.buttonStopElement.disabled = true;
+elements.buttonStartElement.addEventListener('click', startColorChange);
+elements.buttonStopElement.addEventListener('click', stopColorChange);
