@@ -26,7 +26,7 @@ function startColorChange() {
   if (isColorChangeStarted) {
     return;
   };
-  changeState();
+  changeState(isColorChangeStarted);
   backgroundColorChangerIntervalId = setInterval(
     () => {
       elements.bodyElement.style.backgroundColor = colors[randomIntegerFromInterval(0, colors.length - 1)];
@@ -38,20 +38,14 @@ function stopColorChange() {
   if (!isColorChangeStarted) {
     return;
   };
-  changeState();
+  changeState(isColorChangeStarted);
   clearInterval(backgroundColorChangerIntervalId);
 };
 
-function changeState() {
-  if (isColorChangeStarted) {
-    isColorChangeStarted = false;
-    elements.buttonStartElement.disabled = false;
-    elements.buttonStopElement.disabled = true;
-  } else {
-    isColorChangeStarted = true;
-    elements.buttonStartElement.disabled = true;
-    elements.buttonStopElement.disabled = false;
-  };
+function changeState(currentStateOfColorChangeStarted) {
+  isColorChangeStarted = !currentStateOfColorChangeStarted;
+  elements.buttonStartElement.disabled = !currentStateOfColorChangeStarted;
+  elements.buttonStopElement.disabled = currentStateOfColorChangeStarted;
 };
 
 elements.buttonStopElement.disabled = true;
